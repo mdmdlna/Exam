@@ -1,0 +1,205 @@
+﻿@using NtAbcExam.Web.Common
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section Style{
+    <link href=@Url.Content("~/Areas/Admin/style/css/plugins/bootstrap-table/bootstrap-table.min.css") rel="stylesheet" />
+    <script src=@Url.Content("~/Areas/Admin/scripts/plugins/bootstrap-table/bootstrap-table.min.js")></script>
+    <script src=@Url.Content("~/Areas/Admin/scripts/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js")></script>
+
+}
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>部门管理</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row m-b-sm m-t-sm text-right" style="margin-left:5px;margin-right: 3px;">
+                        <form id="searchParams" class="form-inline">
+                            <div style="float:left;">
+                                <a href="@Url.Action("Add", "Dept")" clas class="btn btn-primary">新建</a>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="DeptName" name="DeptName" data-operate-type="Like"
+                                       placeholder="请输入部门名称" class="input-sm form-control" maxlength="20">
+                                <button type="button" class="btn btn-sm btn-primary" id="btnSearch"> 搜索</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="data-list">
+                        <table id="grid"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+            //初始化Table
+            var oTable = new TableInit();
+            oTable.Init();
+
+            //初始化Button的点击事件
+            var oButtonInit = new ButtonInit();
+            oButtonInit.Init();
+        });
+
+
+        var TableInit = function () {
+            var oTableInit = new Object();
+            //初始化Table
+            oTableInit.Init = function () {
+                $('#grid').bootstrapTable({
+                    url: '@Url.Action("GetList","Dept")',         //请求后台的URL（*）
+                    method: 'post',                      //请求方式（*）
+                    toolbar: '#toolbar',                //工具按钮用哪个容器
+                    striped: true,                      //是否显示行间隔色
+                    cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                    pagination: true,                   //是否显示分页（*）
+                    sortable: false,                     //是否启用排序
+                    sortOrder: "asc",                   //排序方式
+                    queryParams: oTableInit.queryParams,//传递参数（*）
+                    sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                    pageNumber: 1,                       //初始化加载第一页，默认第一页
+                    pageSize: @GlobalVar.PageSize,      //每页的记录行数（*）
+                    pageList: [10, 20, 50, 100],        //可供选择的每页的行数（*）
+                    search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                    strictSearch: true,
+                    showColumns: false,                  //是否显示所有的列
+                    showRefresh: false,                  //是否显示刷新按钮
+                    minimumCountColumns: 2,             //最少允许的列数
+                    clickToSelect: true,                //是否启用点击选中行
+                    height: 550,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                    uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+                    showToggle: false,                  //是否显示详细视图和列表视图的切换按钮
+                    cardView: false,                    //是否显示详细视图
+                    detailView: false,                   //是否显示父子表
+                    columns: [
+                    {
+                        field: 'DeptName',
+                        title: '部门名称'
+                    },
+                     {
+
+                         field: 'operate',
+                         title: '操作',
+                         width: 100,
+                         align: 'center',
+                         valign: 'middle',
+                         formatter: operateFormatter,
+                         events: operateEvents
+                     }]
+                });
+            };
+
+            //得到查询的参数
+            oTableInit.queryParams = function (params) {
+                var temp = {
+                    modelQuery: getQueryParams(params)
+                };
+                return temp;
+            };
+            return oTableInit;
+        };
+
+        var ButtonInit = function () {
+            var oInit = new Object();
+            var postdata = {};
+
+            oInit.Init = function () {
+                //初始化页面上面的按钮事件
+            };
+
+            return oInit;
+        };
+
+        function getQueryParams(params) {
+            var query = {
+                limit: params.limit,
+                offset: params.offset,
+                order: params.order,
+                ordername: params.sort,
+                filters: getSerachJson()
+            };
+            //alert(JSON.stringify(query));
+            return query;
+        }
+
+        function getSerachJson() {
+            var searchParames = $('#searchParams').serializeArray();      // jQuery推荐方式
+            $.each(searchParames, function (index, data) {
+                if (data != undefined) {
+                    data.operType = $('[name="' + data.name + '"]', $('#searchParams')).data("operate-type");
+                    if (data.operType == "Between") {
+                        var inputId1 = $('[name="' + data.name + '"]', $('#searchParams')).data("bind-datemin");
+                        var inputId2 = $('[name="' + data.name + '"]', $('#searchParams')).data("bind-datemax");
+                        var minVal = $("#" + inputId1).val();
+                        var maxVal = $("#" + inputId2).val();
+
+                        if (minVal == undefined || minVal == "") {
+                            minVal = "1900-01-01 00:00:00";
+                        } else {
+                            minVal += " 00:00:00";
+                        }
+                        if (maxVal == undefined || maxVal == "") {
+                            maxVal = "2100-12-31 23:59:59";
+                        } else {
+                            maxVal += " 23:59:59";
+                        }
+
+                        data.value = minVal + "," + maxVal;
+                    }
+                }
+            });
+            var jsonFilters = JSON.stringify(searchParames);
+            return jsonFilters;
+        }
+
+        function operateFormatter(value, row, index) {
+            //alert(value);
+            return [
+                '<a id="update" href="@Url.Action("Edit","Dept")?id=' + row.Id + '" title="编辑">编辑</a>',
+                '&nbsp;&nbsp;',
+                '<a id="remove" href="javascript:" title="删除">删除</a>'
+            ].join('');
+        }
+
+        $("#btnSearch").click(function () {
+            $("#grid").bootstrapTable('refresh');
+        });
+
+        window.operateEvents = {
+            'click #remove': function (e, value, row) {
+                layer.confirm('确定要删除这条记录吗？', { icon: 3, title: '提示' }, function (index) {
+                    $.ajax({
+                        url: '@Url.Action("Del", "Dept")',
+                        type: "post",
+                        data: { "id": row.Id },
+                        success: function (result) {
+                            if (result.IsSuccess == true) {
+                                $("#grid").bootstrapTable('refresh');
+                            }
+                            else {
+                                layer.alert('操作失败', { icon: 2 });
+                                layer.closeAll();
+                            }
+                        },
+                        error: function (result) {
+                            alert(result);
+                        }
+                    });
+                    layer.close(index);
+                });
+            }
+        };
+    </script>
+}

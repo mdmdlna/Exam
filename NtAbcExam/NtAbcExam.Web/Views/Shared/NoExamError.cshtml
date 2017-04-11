@@ -1,0 +1,15 @@
+﻿@{
+    ViewBag.Title = "考试不存在";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="am-alert am-alert-danger" >
+    呃，出错了，您选择的考试似乎不太正确。
+</div>
+
+<div class="am-text-center">
+    <a class="am-btn am-btn-success" href="@Url.Action("SelectTest", "Home")">
+        返回
+    </a>    
+</div>
+

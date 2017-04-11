@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+
+    <title>@ViewBag.Title</title>
+    <link href="@Url.Content("~/style/AmazeUI/css/amazeui.css")" rel="stylesheet">
+    <script src="@Url.Content("~/scripts/jquery.min.js")"></script>
+    <script src="@Url.Content("~/style/AmazeUI/js/amazeui.min.js")"></script>
+    <script type="text/javascript">
+        function ajaxBegin() {
+            $.AMUI.progress.start();
+        }
+        function ajaxSuccess() {
+            $.AMUI.progress.done();
+        }
+        function ajaxFailure() {
+            $.AMUI.progress.done();
+            alert("系统异常， 您可以再试一次！");
+        }
+    </script>
+
+    @RenderSection("Style", false)
+</head>
+<body>
+    <header data-am-widget="header" class="am-header am-header-default">
+        <div class="am-header-left am-header-nav">
+            <a href="@Url.Action("SelectTest","Home")">
+                <i class="am-header-icon am-icon-home"></i>
+                <span>首页</span>
+            </a>
+        </div>
+        <h6 class="am-header-title" style="font-size:18px;">
+            南通农行微考试
+        </h6>
+        @if (ViewBag.Total != null)
+        {
+            //var total = (int)ViewBag.Total;
+            <nav data-am-widget="menu" class="am-menu  am-menu-offcanvas1" data-am-menu-offcanvas>
+                @*<a href="javascript: void(0)" class="am-menu-toggle">
+                        <i class="am-menu-toggle-icon am-icon-bars"></i>
+                    </a>
+
+                    <div class="am-offcanvas">
+                        <div class="am-offcanvas-bar am-offcanvas-bar-flip">
+                            <ul class="am-menu-nav am-avg-sm-1">
+                                @for (int i = 1; i <= total; i++)
+                                {
+                                    <li>
+                                        <a href="javascript:void(0)" onclick="go('@(i - 1)')">@i</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>*@
+            </nav>
+        }
+        else
+        {
+            <div class="am-header-right am-header-nav">
+                <a href="@Url.Action("Logout","Home")">
+                    <i class="am-header-icon am-icon-sign-out"></i>
+                    <span>退出</span>
+                </a>
+            </div>
+        }
+    </header>
+    @RenderBody()
+
+    <script src="@Url.Content("~/scripts/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js")"></script>
+
+    @RenderSection("Scripts", false)
+</body>
+</html>

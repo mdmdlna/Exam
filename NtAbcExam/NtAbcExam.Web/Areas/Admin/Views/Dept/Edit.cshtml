@@ -1,0 +1,91 @@
+﻿@model NtAbcExam.Web.Areas.Admin.Models.DeptViewModel
+@{
+    ViewBag.Title = "编辑部门";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>编辑部门</h5>
+                </div>
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" method="post" id="form1" action="@Url.Action("EditSave", "Dept")">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">部门名称：</label>
+                            <div class="col-sm-8">
+                                <input name="DeptName" id="DeptName" value="@Model.DeptName" class="form-control valid" type="text" maxlength="20">
+                            </div>
+                        </div>
+
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-3">
+                                <button class="btn btn-primary" type="button" onclick="save()">保存</button>
+                                <a href="@Url.Action("Index", "Dept")" class="btn btn-white">取消</a>
+                            </div>
+                        </div>
+                        <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script type="text/javascript">
+        $("#form1").validate({
+            rules: {
+                "DeptName": {
+                    required: true,
+                    maxlength: 20,
+                    remote: {
+                        url: '@Url.Action("IsExistDeptName", "Dept")',
+                        type: "POST",
+                        data: {
+                            "deptName": function () { return $("#DeptName").val(); },
+                            "id": function () { return $("#Id").val() }
+                        },
+                        dataType: "json"
+                    }
+                }
+            },
+            messages: {
+                "DeptName":
+                {
+                    "remote": "部门名称已存在"
+                }
+            },
+            onkeyup: false,
+            focusCleanup: true,
+            success: "valid"
+        });
+
+        function save() {
+            if ($("#form1").valid()) {
+                $.ajax({
+                    url: $("#form1").attr("action"),
+                    type: $("#form1").attr("method"),
+                    data: $('#form1').serialize(),
+                    success: function (result) {
+                        if (result.IsSuccess == true) {
+                            layer.alert('操作成功', { icon: 1 }, function () {
+                                location.href = '@Url.Action("Index", "Dept")';
+                            });
+                        } else {
+                            layer.alert('操作失败', { icon: 2 });
+                        }
+                    },
+                    error: function (result) {
+                        alert(result);
+                    }
+                });
+            }
+        }
+    </script>
+}
+

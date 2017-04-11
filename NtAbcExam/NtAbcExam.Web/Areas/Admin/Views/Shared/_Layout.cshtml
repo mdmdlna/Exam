@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <title>@ViewBag.Title</title>
+    <script src="@Url.Content("~/Areas/Admin/scripts/jquery.min.js")"></script>
+    <script src="@Url.Content("~/Areas/Admin/scripts/common.js")"></script>
+
+    <script src="@Url.Content("~/Areas/Admin/scripts/plugins/layer/layer.js")"></script>
+
+    <script src="@Url.Content("~/Areas/Admin/scripts/plugins/validate/jquery.validate.min.js")"></script>
+    <script src="@Url.Content("~/Areas/Admin/scripts/plugins/validate/messages_zh.min.js")"></script>
+    <script src="@Url.Content("~/Areas/Admin/scripts/plugins/validate/validate-methods.js")"></script>
+
+    <link href="@Url.Content("~/Areas/Admin/style/css//bootstrap.min.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Areas/Admin/style/css/font-awesome.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Areas/Admin/style/css/animate.min.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Areas/Admin/style/css/style.css")" rel="stylesheet">
+
+    @RenderSection("Style", false)
+</head>
+<body class="gray-bg">
+    @RenderBody()
+    <script src="@Url.Content("~/Areas/Admin/scripts/bootstrap.min.js")"></script>
+    @RenderSection("Scripts", false)
+</body>
+</html>

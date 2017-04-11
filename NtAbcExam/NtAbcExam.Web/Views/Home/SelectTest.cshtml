@@ -1,0 +1,29 @@
+﻿@model List<NtAbcExam.Web.Models.ExamViewModel>
+@{
+    ViewBag.Title = "选择考试";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model.Count == 0)
+{
+    <div class="am-alert am-alert-warning" >
+        <p>没有正在进行的考试~</p>
+    </div>
+}
+else
+{
+
+    <ul class="am-list am-list-static  am-list-striped ">
+        @foreach (var item in Model)
+        {
+            <li class="">
+                <a href="@Url.Action("Start", "Home")?testId=@item.TestId">
+
+                    <i class="am-icon-pencil am-icon-fw"></i>
+                    @item.SubjectName
+                    <span class="am-badge am-badge-success am-fr">@(item.TestTime)分钟</span>
+                </a>
+            </li>
+        }
+    </ul>
+}

@@ -1,0 +1,249 @@
+﻿@using NtAbcExam.Domain.Models
+@using NtAbcExam.Domain.Repositories
+@using NtAbcExam.Web.Areas.Admin.Common
+
+@{
+    ViewBag.Title = "CreateExam";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section Style{
+    <link href="@Url.Content("~/Areas/Admin/style/css/plugins/datapicker/datepicker3.css")" rel="stylesheet">
+}
+
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>创建考试</h5>
+                </div>
+                <div class="ibox-content">
+                    <form method="post" class="form-horizontal" id="postform" action="@Url.Action("CreateExam","Exam")">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">科目：</label>
+                            <div class="col-sm-9">
+                                @{
+                                    ExamSubjectRepository subjectRep = new ExamSubjectRepository();
+                                    List<exam_subject> subjectList = subjectRep.GetAll();
+
+                                    <select id="SubjectId" name="SubjectId" class="form-control">
+                                        <option value="-1">==请选择==</option>
+                                        @foreach (var entity in subjectList)
+                                        {
+                                            <option value="@entity.Id">@entity.SubjectName</option>
+                                        }
+                                    </select>
+                                }
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">部门：</label>
+                            <div class="col-sm-9">
+                                @{
+                                    DepartmentRepository deptRep = new DepartmentRepository();
+                                    List<department> deptList;
+                                    if (AdminLoginHelper.LoginInfo.IsSa)
+                                    {
+                                        deptList = deptRep.GetAll();
+                                    }
+                                    else
+                                    {
+                                        deptList = deptRep.GetAllByDeptId(AdminLoginHelper.LoginInfo.DeptId);
+                                    }
+                                    <select id="DeptId" name="DeptId" class="form-control" onchange="selectDept()">
+                                        <option value="-1">==请选择==</option>
+                                        @foreach (var entity in deptList)
+                                        {
+                                            <option value="@entity.Id">@entity.DeptName</option>
+                                        }
+                                    </select>
+                                }
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">单选题条数：</label>
+                            <div class="col-sm-9">
+                                <input name="SingleCount" id="SingleCount" class="form-control" type="text" maxlength="5">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">单选题每题分数：</label>
+                            <div class="col-sm-9">
+                                <input name="SinglePer" id="SinglePer" class="form-control" type="text" maxlength="5">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">多选题条数：</label>
+                            <div class="col-sm-9">
+                                <input name="MultiCount" id="MultiCount" class="form-control" type="text" maxlength="5">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">多选题每题分数：</label>
+                            <div class="col-sm-9">
+                                <input name="MultiPer" id="MultiPer" class="form-control" type="text" maxlength="5">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">判断题条数：</label>
+                            <div class="col-sm-9">
+                                <input name="JudgeCount" id="JudgeCount" class="form-control" type="text" maxlength="5">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">判断题每题分数：</label>
+                            <div class="col-sm-9">
+                                <input name="JudgePer" id="JudgePer" class="form-control" type="text" maxlength="5">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">考试时长：</label>
+                            <div class="col-sm-9">
+                                <input name="TestTime" id="TestTime" class="form-control" type="text" maxlength="5">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">考试开始时间：</label>
+                            <div class="col-sm-9">
+                                <input name="StartTime" id="StartTime" class="form-control" type="text" maxlength="20">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">考试结束时间：</label>
+                            <div class="col-sm-9">
+                                <input name="EndTime" id="EndTime" class="form-control" type="text" maxlength="20">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">参考人员：</label>
+                            <div class="col-sm-9">
+                                <textarea id="EmpIds" class="form-control" name="EmpIds"></textarea>
+                            </div>
+
+                            @*<input type="hidden" id="EmpIds" name="EmpIds" />*@
+                        </div>
+
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-3">
+                                <button class="btn btn-primary" type="button" onclick="save()">保存</button>
+                                <a href="@Url.Action("ExamTestIndex","Exam")" class="btn btn-white">取消</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="@Url.Content("~/Areas/Admin/scripts/plugins/datapicker/bootstrap-datepicker.js")"></script>
+
+    <script type="text/javascript">
+        $("#postform").validate({
+            rules: {
+                "EmpIds": {
+                    required: true
+                }
+            },
+            messages: {
+                "EmpIds":
+                {
+                    "remote": "参考人员不能为空"
+                }
+            },
+            onkeyup: false,
+            focusCleanup: true,
+            success: "valid"
+        });
+
+        $(function() {
+            $("#StartTime").datepicker({
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                calendarWeeks: false,
+                autoclose: true
+            });
+
+            $("#EndTime").datepicker({
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                calendarWeeks: false,
+                autoclose: true
+            });
+        });
+
+        function selectDept() {
+            $.ajax({
+                url: '@Url.Action("EmpList", "Exam")',
+                type: 'POST',
+                data: { "deptId": $("#DeptId").val() },
+                success: function (result) {
+                    $("#divEmps").html(result);
+                },
+                error: function (result) {
+                    alert(result);
+                }
+            });
+        }
+
+        function selectAll() {
+            $(".checkemp").prop("checked", "true");
+        }
+
+        function cancelAll() {
+            $(".checkemp").removeAttr("checked");
+        }
+
+        function save() {
+            //getAllSelectEmp();
+            if ($("#postform").valid()) {
+                $.ajax({
+                    url: $("#postform").attr("action"),
+                    type: $("#postform").attr("method"),
+                    data: $('#postform').serialize(),
+                    success: function (result) {
+                        if (result.IsSuccess == true) {
+                            layer.alert('操作成功', { icon: 1 }, function () {
+                                location.href = '@Url.Action("ExamTestIndex", "Exam")';
+                            });
+                        } else {
+                            layer.alert('操作失败', { icon: 2 });
+                        }
+                    },
+                    error: function (result) {
+                        alert(result);
+                    }
+                });
+            }
+        }
+
+        function getAllSelectEmp() {
+            var selectedEmp = new Array();
+
+            $("input[id^='chk_']").each(function () {
+                if ($(this).prop("checked")) {
+                    selectedEmp.push($(this).attr("id").substring(4));
+                }
+            });
+
+            $("#EmpIds").val(selectedEmp.join(","));
+        }
+    </script>
+}
+

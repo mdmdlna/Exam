@@ -1,0 +1,18 @@
+﻿@model NtAbcExam.Web.Models.ResultViewModel
+@{
+    ViewBag.Title = "Result";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<article data-am-widget="paragraph" class="am-paragraph am-paragraph-default" data-am-paragraph="{ tableScrollable: true, pureview: true }">
+    <p>祝贺您，您已经成功完成考试</p>
+    <p>开始时间：@Model.BeginTime</p>
+    <p>交卷时间：@Model.EndTime</p>
+    <p>本次考试的分数为：@Model.Point</p>
+</article>
+
+<div class="am-text-center">
+    <a class="am-btn am-btn-success" href="@Url.Action("SelectTest", "Home")">
+        返回
+    </a>
+</div>

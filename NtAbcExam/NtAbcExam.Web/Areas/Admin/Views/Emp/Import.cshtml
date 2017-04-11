@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewBag.Title = "Import";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>导入员工</h5>
+                </div>
+                <div class="ibox-content">
+                    <form action="@Url.Action("Import", "Emp")" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">选择文件：</label>
+                            <div class="col-sm-9">
+                                <input type="file" name="files" data-filename-placement="inside" style="display: inline-block">
+                            </div>
+                        </div>
+                        <br />
+                        <p style="color: Red; text-align: center;">@ViewBag.Error</p>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-3">
+                                <button type="submit" class="btn btn-primary ">导入</button>
+                                <a href="@Url.Action("Index","Emp")" class="btn btn-white">取消</a>
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

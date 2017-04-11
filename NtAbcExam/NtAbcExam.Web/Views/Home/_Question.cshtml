@@ -1,0 +1,87 @@
+﻿@using NtAbcExam.Domain.Models
+@model NtAbcExam.Web.Models.QuestionViewModel
+
+@{
+    decimal progress = Convert.ToDecimal(Model.Index + 1) / Convert.ToDecimal(Model.Total) * 100;
+}
+<div class="am-progress">
+    <div class="am-progress-bar am-progress-bar-success" style="width: @(progress)%"></div>
+</div>
+<div class="am-g">
+    <div class="am-u-sm-6">
+        @Model.Type
+    </div>
+    <div class="am-u-sm-6 am-text-right" id="divTime">
+
+    </div>
+    <input type="hidden" value="@Model.Balance" id="hidBalance" />
+</div>
+
+<ul class="am-list am-list-static am-list-striped">
+    <li>
+        @{
+            var index = Model.Index + 1;
+            var curIndex = index;
+            if (index <= Model.SingleCount)
+            {
+                curIndex = index;
+            }
+            else if (index > Model.SingleCount && index <= (Model.SingleCount + Model.MultiCount))
+            {
+                curIndex = index - Model.SingleCount;
+            }
+            else if (index > (Model.SingleCount + Model.MultiCount))
+            {
+                curIndex = index - Model.SingleCount - Model.MultiCount;
+            }
+
+        }
+        @curIndex、@Model.Content
+    </li>
+    @{
+        var inputType = string.Empty;
+        switch (Model.Type)
+        {
+            case QuestionType.单选题:
+                inputType = "radio";
+                break;
+            case QuestionType.多选题:
+                inputType = "checkbox";
+                break;
+            case QuestionType.判断题:
+                inputType = "radio";
+                break;
+        }
+
+        foreach (var item in Model.Options)
+        {
+            <li>
+                <label class="am-checkbox">
+                    @{
+                        var isChecked = string.Empty;
+                        if (Model.Answers.Count(f => f.Contains(item.Key)) > 0)
+                        {
+                            isChecked = "checked='checked'";
+                        }
+                    }
+                    @if (Model.Type != QuestionType.判断题)
+                    {
+                        <input type="@inputType" @isChecked name="answerOptions" value="@item.Key">
+                        @(item.Key + "、" + item.Value)
+                    }
+                    else
+                    {
+                        <input type="@inputType" @isChecked name="answerOptions" value="@item.Key">
+                        @(item.Value)
+                    }
+                </label>
+            </li>
+                        }
+    }
+</ul>
+
+
+<input type="hidden" name="questionId" id="questionId" value="@Model.Id" />
+<input type="hidden" name="testId" id="testId" value="@Model.TestId" />
+<input type="hidden" name="index" id="index" value="@(Model.Index)" />
+<input type="hidden" name="Total" id="Total" value="@(Model.Total)" />

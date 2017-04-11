@@ -1,0 +1,138 @@
+﻿@model NtAbcExam.Web.Models.LoginViewModel
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <title>南通农行微考试--登录</title>
+    <link href="@Url.Content("~/style/AmazeUI/css/amazeui.css")" rel="stylesheet">
+    <link href="@Url.Content("~/style/AmazeUI/css/admin.css")" rel="stylesheet">
+    <link href="@Url.Content("~/style/AmazeUI/css/app.css")" rel="stylesheet">
+
+    <script src="@Url.Content("~/scripts/jquery.min.js")"></script>
+    <script src="@Url.Content("~/scripts/lib/validate/jquery.validate.min.js")"></script>
+    <script src="@Url.Content("~/scripts/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js")"></script>
+
+    <style type="text/css">
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+       
+
+        #weixin-tip {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(0, 0, 0, 0.8);
+            filter: alpha(opacity=80);
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+        }
+
+            #weixin-tip p {
+                text-align: center;
+                margin-top: 10%;
+                padding: 0 5%;
+                position: relative;
+            }
+
+            #weixin-tip .close {
+                color: #fff;
+                padding: 5px;
+                font: bold 20px/20px simsun;
+                text-shadow: 0 1px 0 #ddd;
+                position: absolute;
+                top: 0;
+                left: 5%;
+            }
+    </style>
+</head>
+
+<body>
+    <div class="am-g login">
+        <br />
+        <div class="login-logo-block tpl-login-max">
+            <div class="login-logo-text">
+                <div class="login-logo-text">
+                    南通农行微考试
+                </div>
+            </div>
+            <div class="login-font">
+                <i>输入账号、密码后登录 </i>
+            </div>
+
+
+            <div class="am-u-sm-10 login-am-center">
+                <div style="text-align: left; color: #ff0000">
+                    @Html.ValidationSummary()
+                </div>
+                @using (Html.BeginForm("Login", "Home", FormMethod.Post, new { @class = "am-form" }))
+            {
+                    <fieldset>
+                        <div class="am-form-group">
+                            @Html.TextBoxFor(m => m.UserId, new { placeholder = "账号" })
+                        </div>
+                        <div class="am-form-group">
+                            @Html.PasswordFor(m => m.UserPwd, new { placeholder = "密码" })
+                        </div>
+                        <p>
+                            <button type="submit" class="am-btn am-btn-default">登录</button>
+                        </p>
+                    </fieldset>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div id="weixin-tip">
+        <p>
+            <img src="~/Style/live_weixin.png" alt="微信打开" />
+            <span id="close" title="关闭" class="close">×</span>
+        </p>
+    </div>
+
+    <script type="text/javascript">
+
+        var is_weixin = (function () {
+
+            var ua = navigator.userAgent.toLowerCase();
+
+            if (ua.match(/MicroMessenger/i) == "micromessenger") {
+
+                return true;
+
+            } else {
+
+                return false;
+
+            }
+
+        })();
+
+        window.onload = function () {
+            var winHeight = typeof window.innerHeight != 'undefined' ? window.innerHeight : document.documentElement.clientHeight;
+            //var btn = document.getElementById('J_weixin');
+            //var btn = document.getElementById('J_weixinb');
+
+            var tip = document.getElementById('weixin-tip');
+            var close = document.getElementById('close');
+
+            if (is_weixin) {
+                tip.style.height = winHeight + 'px';
+                tip.style.display = 'block';
+
+                close.onclick = function () {
+                    tip.style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

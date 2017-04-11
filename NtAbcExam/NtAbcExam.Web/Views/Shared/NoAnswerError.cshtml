@@ -1,0 +1,15 @@
+﻿@{
+    ViewBag.Title = "考卷未答题";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="am-alert am-alert-danger">
+    您似乎没有答题就交卷了。
+</div>
+
+<div class="am-text-center">
+    <a class="am-btn am-btn-success" href="@Url.Action("SelectTest", "Home")">
+        返回
+    </a>
+</div>
+

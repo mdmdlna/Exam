@@ -1,0 +1,111 @@
+﻿@model NtAbcExam.Web.Areas.Admin.Models.AdminUserViewModel
+@{
+    ViewBag.Title = "新建用户";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins">
+                 <div class="ibox-title">
+                    <h5>新建用户</h5>
+                </div>
+                <div class="ibox-content">
+                    <form method="post" class="form-horizontal" id="postform" action="@Url.Action("AddNew","AdminUser")">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">登录名：</label>
+                            <div class="col-sm-9">
+                                <input name="UserName" id="UserName" class="form-control" type="text" maxlength="20">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">登录密码：</label>
+                            <div class="col-sm-9">
+                                <input name="UserPwd" id="UserPwd" class="form-control" type="password" maxlength="20">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">所属部门：</label>
+                            <div class="col-sm-9">
+                                @Html.DropDownList("DeptId", Model.DeptSelectList, new { @class = "form-control m-b" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">所属角色：</label>
+                            <div class="col-sm-9">
+                                <select id="IsSa" name="IsSa" class="form-control m-b">
+                                    <option value="false">部门管理员</option>
+                                    <option value="true">超级管理员</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-3">
+                                <button class="btn btn-primary" type="button" onclick="save()">保存</button>
+                                <a href="@Url.Action("Index","AdminUser")" class="btn btn-white">取消</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $("#postform").validate({
+            rules: {
+                "LoginName": {
+                    required: true,
+                    maxlength: 11,
+                    remote: {
+                        url: '@Url.Action("IsExistUserName", "AdminUser")',
+                        type: "POST",
+                        data: {
+                            "loginName": function () { return $("#UserName").val(); },
+                        },
+                        dataType: "json"
+                    }
+                }
+            },
+            messages: {
+                "LoginName":
+                {
+                    "remote": "登录名称已存在"
+                }
+            },
+            onkeyup: false,
+            focusCleanup: true,
+            success: "valid"
+        });
+
+        function save() {
+            if ($("#postform").valid()) {
+                $.ajax({
+                    url: $("#postform").attr("action"),
+                    type: $("#postform").attr("method"),
+                    data: $('#postform').serialize(),
+                    success: function (result) {
+                        if (result.IsSuccess == true) {
+                            layer.alert('操作成功', { icon: 1 }, function () {
+                                location.href = '@Url.Action("Index", "AdminUser")';
+                            });
+                        } else {
+                            layer.alert('操作失败', { icon: 2 });
+                        }
+                    },
+                    error: function (result) {
+                        alert(result);
+                    }
+                });
+            }
+        }
+    </script>
+}
+
+

@@ -1,0 +1,15 @@
+﻿@model List<NtAbcExam.Web.Areas.Admin.Models.EmpViewModel>
+@{
+    ViewBag.Title = "_EmpList";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<button  onclick="selectAll()" type="button" class="btn btn-primary">全选</button>
+<button  onclick="cancelAll()" type="button" class="btn btn-primary">取消</button>
+<ul>
+    @foreach (var item in Model)
+    {
+        <li>
+            <input type="checkbox" class="checkemp" id="chk_@item.UserId"  value="" />@item.UserName (@item.UserId)
+        </li>
+    }
+</ul>

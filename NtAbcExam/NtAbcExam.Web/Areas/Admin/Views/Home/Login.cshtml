@@ -1,0 +1,50 @@
+﻿
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>农行考试系统管理后台</title>
+
+    <link href="@Url.Content("~/Areas/Admin/style/css/bootstrap.min.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Areas/Admin/style/css/font-awesome.css")" rel="stylesheet">
+
+    <link href="@Url.Content("~/Areas/Admin/style/css/animate.min.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Areas/Admin/style/css/style.css")" rel="stylesheet">
+</head>
+
+<body class="gray-bg">
+    <div class="middle-box text-center loginscreen  animated fadeInDown">
+        <div>
+            <div>
+                <h1 class="logo-name">ABC</h1>
+            </div>
+            <h3>农行考试系统管理后台</h3>
+            @using (Html.BeginForm("Login", "Home", FormMethod.Post, new { Areas = "Admin", @class = "m-t" }))
+            {
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="用户名" required="" name="LoginName" id="LoginName">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" placeholder="密码" required="" name="LoginPwd" id="LoginPwd">
+                </div>
+                <div style="text-align: left;color:#ff0000">
+                    @Html.ValidationSummary(false)
+                </div>
+                <button type="submit" class="btn btn-primary block full-width m-b">登 录</button>
+
+                <p class="text-muted text-center">
+                    <a href="login.html#"><small>忘记密码了？</small></a>
+                </p>
+            }
+        </div>
+    </div>
+    <script src=@Url.Content("~/Areas/Admin/scripts/jquery.min.js")></script>
+    <script src=@Url.Content("~/Areas/Admin/scripts/bootstrap.min.js")></script>
+</body>
+</html>

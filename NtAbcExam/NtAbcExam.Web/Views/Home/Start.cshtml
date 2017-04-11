@@ -1,0 +1,132 @@
+﻿@using NtAbcExam.Domain.Models
+@model NtAbcExam.Web.Models.QuestionViewModel
+@{
+    ViewBag.Title = "开始考试";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form action="@Url.Action("GoIndex","Home")"
+      id="form1"
+      data-ajax="true"
+      data-ajax-update="#divQuestion"
+      data-ajax-begin="ajaxBegin"
+      data-ajax-failure="ajaxFailure"
+      data-ajax-success="ajaxSuccess">
+    <div id="divQuestion">
+        @{
+            Html.RenderAction("GoIndex", new
+            {
+                testId = Model.TestId,
+                index = Model.Index,
+                questionId = Model.Id,
+                answerOptions = string.Empty
+            });
+        }
+    </div>
+    <div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default ">
+        <ul class="am-navbar-nav am-cf am-avg-sm-6">
+            <li id="prveTest">
+                <a href="javascript:void(0)" onclick="prve()">
+                    @*<span class="am-icon-backward"></span>*@
+                    <span class="am-navbar-label">上一题</span>
+                </a>
+
+            </li>
+            <li id="nextTest">
+                <a href="javascript:void(0)" onclick="next()">
+                    @*<span class="am-icon-forward"></span>*@
+                    <span class="am-navbar-label">下一题</span>
+                </a>
+            </li>
+            <li id="finishTest" style="display: none;">
+                <a data-am-modal="{target: '#my-modal-loading'}" href="javascript:void(0)" onclick="finish()">
+                    @*<span class="am-icon-upload"></span>*@
+                    <span class="am-navbar-label">交卷</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</form>
+
+<div class="am-modal am-modal-loading am-modal-no-btn" tabindex="-1" id="my-modal-loading">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">正在交卷...</div>
+        <div class="am-modal-bd">
+            <span class="am-icon-spinner am-icon-spin"></span>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        var timer;
+        var totalSec = $("#hidBalance").val();
+        var isSubmiting = false;
+
+        function next() {
+            var curIndex = parseInt($("#index").val()) + 1;
+            var totalCount = parseInt($("#Total").val());
+            if (curIndex == totalCount - 1) {
+                $("#nextTest").hide();
+                $("#finishTest").show();
+            }
+            $("#index").val(curIndex);
+            $("#form1").submit();
+        }
+
+        function prve() {
+            var curIndex = parseInt($("#index").val()) - 1;
+            var totalCount = parseInt($("#Total").val());
+            if (curIndex < 0) {
+                return;
+            } else if (curIndex < totalCount) {
+                $("#nextTest").show();
+                $("#finishTest").hide();
+            }
+            $("#index").val(curIndex);
+            $("#form1").submit();
+        }
+
+        function finish() {
+            if (!isSubmiting) {
+                isSubmiting = true;
+                $("#form1").attr("action", "@Url.Action("Finish", "Home")");
+                $("#form1").removeAttr("data-ajax");
+                $("#form1").submit();
+            }
+        }
+
+        function go(goIndex) {
+            var totalCount = parseInt($("#Total").val());
+            if (goIndex == totalCount - 1) {
+                $("#nextTest").hide();
+                $("#finishTest").show();
+            } else {
+                $("#nextTest").show();
+                $("#finishTest").hide();
+            }
+            $("#index").val(goIndex);
+            $("#form1").submit();
+        }
+
+        function countDown() {
+            totalSec--;
+            var hour = parseInt(totalSec / 3600);
+            var minute = parseInt((totalSec - hour * 3600) / 60);
+            var sec = totalSec - hour * 3600 - minute * 60;
+            var text = hour + ":" + minute + ":" + sec;
+            $("#divTime").html(text);
+            if (totalSec <= 0) {
+                alert('已到交卷时间，确定后将自动交卷');
+                if (!isSubmiting) {
+                    isSubmiting = true;
+                    $("#form1").attr("action", "@Url.Action("Finish", "Home")");
+                    $("#form1").removeAttr("data-ajax");
+                    $("#form1").submit();
+                }
+            }
+        }
+
+        timer = setInterval("countDown()", 1000);
+    </script>
+}

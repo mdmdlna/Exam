@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewBag.Title = "考试时间已过";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="am-alert am-alert-danger" >
+    考试时间超过了交卷时间，系统已按最后答题情况自动交卷
+</div>
+
+<div class="am-text-center">
+    <a class="am-btn am-btn-success" href="@Url.Action("SelectTest", "Home")">
+        返回
+    </a>    
+</div>
+

@@ -1,0 +1,85 @@
+﻿@using NtAbcExam.Domain.Models
+@using NtAbcExam.Domain.Repositories
+@using NtAbcExam.Web.Areas.Admin.Common
+
+@{
+    ViewBag.Title = "Import";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>导入题库</h5>
+                </div>
+                <div class="ibox-content">
+                    <form action="@Url.Action("Import", "Exam")" class="form-horizontal" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">导入文件：</label>
+                            <div class="col-sm-9">
+                                <input type="file" name="files" data-filename-placement="inside" style="display: inline-block">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">部门：</label>
+                            <div class="col-sm-9">
+                                @{
+                                    DepartmentRepository deptRep = new DepartmentRepository();
+                                    List<department> deptList;
+                                    if (AdminLoginHelper.LoginInfo.IsSa)
+                                    {
+                                        deptList = deptRep.GetAll();
+                                    }
+                                    else
+                                    {
+                                        deptList = deptRep.GetAllByDeptId(AdminLoginHelper.LoginInfo.DeptId);
+                                    }
+                                    <select id="DeptId" name="DeptId" class="form-control">
+                                        <option value="-1">==请选择==</option>
+                                        @foreach (var entity in deptList)
+                                        {
+                                            <option value="@entity.Id">@entity.DeptName</option>
+                                        }
+                                    </select>
+                                }
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">科目：</label>
+                            <div class="col-sm-9">
+                                @{
+                                    ExamSubjectRepository subjectRep = new ExamSubjectRepository();
+                                    List<exam_subject> subjectList = subjectRep.GetAll();
+
+                                    <select id="SubjectId" name="SubjectId" class="form-control">
+                                        <option value="-1">==请选择==</option>
+                                        @foreach (var entity in subjectList)
+                                        {
+                                            <option value="@entity.Id">@entity.SubjectName</option>
+                                        }
+                                    </select>
+                                }
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"></label>
+                            <div class="col-sm-9">
+                                <p style="color: Red; text-align: left;">@Html.Raw(ViewBag.Error)</p>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-3">
+                                <button type="submit" class="btn btn-primary ">导入</button>
+                                <a href="@Url.Action("Index","Exam")" class="btn btn-white">取消</a>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
