@@ -18,7 +18,7 @@ namespace NtAbcExam.Web.Controllers
         private readonly ExamTestRepository _examTestRep = new ExamTestRepository();
         private readonly TestPaperRepository _testPaperRep = new TestPaperRepository();
         private readonly ExamScoreRepository _examScoreRep = new ExamScoreRepository();
-        private readonly CadreInfoRepository _cadreInfoRep = new CadreInfoRepository();
+        //private readonly CadreInfoRepository _cadreInfoRep = new CadreInfoRepository();
         private readonly ExamSubjectRepository _subjectRep = new ExamSubjectRepository();
 
         public ActionResult Login()

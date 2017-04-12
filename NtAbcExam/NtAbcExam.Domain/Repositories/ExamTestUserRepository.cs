@@ -23,7 +23,8 @@ namespace NtAbcExam.Domain.Repositories
 
         public void Finish(string userId, int testId)
         {
-            Db.Context.Update<exam_testuser>(exam_testuser._.HaveTest, 1, q => q.TestId == testId && q.UserId == userId);
+            Db.Context.Update<exam_testuser>(exam_testuser._.HaveTest, 1,
+                q => q.TestId == testId && q.UserId == userId);
         }
 
 
@@ -32,7 +33,13 @@ namespace NtAbcExam.Domain.Repositories
             return Db.Context.Delete<exam_testuser>(q => q.TestId == testId);
         }
 
+        public List<string> GetNoGradeUsersId(int testId)
+        {
+            return Db.Context.From<exam_testuser>()
+                        .Select(s => s.UserId)
+                        .Where(q => q.TestId == testId && q.HaveTest == 0)
+                        .ToList<string>();
 
-     
+        }
     }
 }

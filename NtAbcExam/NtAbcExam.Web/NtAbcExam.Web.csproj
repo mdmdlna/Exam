@@ -462,6 +462,7 @@
     <Content Include="Views\Shared\TimeOutError.cshtml" />
     <Content Include="Views\Shared\NoAnswerError.cshtml" />
     <Content Include="Views\Shared\TimeOutErrorNoLayout.cshtml" />
+    <None Include="Properties\PublishProfiles\kaoshi.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -122,6 +122,45 @@ namespace NtAbcExam.Domain.Repositories
             RemoveFormCache(testPaper.Id, userId);
         }
 
+
+        public void NoJoin(string userId, int testId)
+        {
+            var user = _cadreInfoRep.GetModelByUserId(userId);
+
+            if (user == null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(userId));
+            }
+
+            var examTest = _examTestRep.GetModelByTestId(testId);
+            if (examTest == null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(examTest));
+            }
+
+            var score = new exam_score()
+            {
+                UserId = user.UserID,
+                UserName = user.UserName,
+                DeptId = user.DeptId,
+                Office = user.Office,
+                Duties = user.Duties,
+                SubjectId = examTest.SubjectId,
+                TestId = examTest.TestId,
+                StartTime = examTest.StartTime,
+                EndTime = DateTime.Now,
+                Score = -1
+            };
+
+            //检查是否已经交过卷，同一个人同一门考试只能有一成绩
+            if (!_examScore.IsFinishedExam(score.TestId, score.UserId))
+            {
+                //最好事务处理....
+                _examScore.Add(score);
+                _examTestUserRep.Finish(userId, examTest.Id);
+            }
+        }
+
         public void SaveToCache(int testId, string userId, TestPaper testPaper)
         {
             //SaveToRedis
@@ -136,8 +175,7 @@ namespace NtAbcExam.Domain.Repositories
         }
 
 
-        //
-        private TestPaper LoadFormCache(int testId, string userId)
+        public TestPaper LoadFormCache(int testId, string userId)
         {
             string key = "TestPaper_" + testId;
             string dataKey = testId + "-" + userId;

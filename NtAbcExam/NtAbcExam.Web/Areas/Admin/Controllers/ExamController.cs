@@ -28,6 +28,7 @@ namespace NtAbcExam.Web.Areas.Admin.Controllers
         private readonly DepartmentRepository _deptRep = new DepartmentRepository();
         private readonly ExamSubjectRepository _subjectRep = new ExamSubjectRepository();
         private readonly ExamTestUserRepository _examTestUserRep = new ExamTestUserRepository();
+        private readonly TestPaperRepository _testPaperRep = new TestPaperRepository();
 
         // GET: Admin/Exam
         public ActionResult Index()
@@ -57,6 +58,29 @@ namespace NtAbcExam.Web.Areas.Admin.Controllers
         public ActionResult CreateExam()
         {
             return View();
+        }
+
+        public ActionResult Collect(int testId)
+        {
+            var collectUserIds = _examTestUserRep.GetNoGradeUsersId(testId);
+
+            foreach (var userId in collectUserIds)
+            {
+                var testPaper = _testPaperRep.LoadFormCache(testId, userId);
+                if (testPaper != null)
+                {
+                    if ((DateTime.Now - testPaper.BeginTime).TotalMinutes > testPaper.TestDuration)
+                    {
+                        _testPaperRep.FinishTest(userId, testPaper);
+                    }
+                }
+                else
+                {
+                    _testPaperRep.NoJoin(userId, testId);
+                }
+            }
+
+            return RedirectToAction("ViewScore", new { testId = testId });
         }
 
         [HttpPost]

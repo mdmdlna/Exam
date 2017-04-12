@@ -19,8 +19,12 @@
                     <h5>考试成绩</h5>
                 </div>
                 <div class="ibox-content">
-                    <div class="row m-b-sm m-t-sm text-right" style="margin-left:5px; margin-right:3px;">
+                    <div class="row m-b-sm m-t-sm text-right" style="margin-left: 5px; margin-right: 3px;">
                         <form id="searchParams" class="form-inline">
+                            <div style="float:left;">
+                                <a onclick="if(!confirm('确定要收卷吗?')) return false;" href="@Url.Action("Collect", "Exam")?testId=@ViewBag.TestId" class="btn btn-primary">强制收卷</a>
+                            </div>
+
                             <div class="form-group">
                                 <input type="hidden" data-operate-type="Equals" id="TestId" name="TestId" value="@ViewBag.TestId" />
                             </div>
@@ -101,7 +105,16 @@
                     },
                     {
                         field: 'Score',
-                        title: '成绩'
+                        title: '成绩',
+                        align: 'center',
+                        formatter:function(value, row, index) {
+                            if (value<0) {
+                                return "未参加考试";
+                            }
+                            else {
+                                return value;
+                            }
+                        }
                     },
                     {
 
